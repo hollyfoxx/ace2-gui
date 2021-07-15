@@ -86,6 +86,7 @@ def test_create_duplicate_unique_fields(client, key):
     create2_json[key] = create1_json[key]
     create2 = client.post("/api/alert/", json=create2_json)
     assert create2.status_code == status.HTTP_409_CONFLICT
+    assert False is True
 
 
 def test_create_nonexistent_owner(client):
