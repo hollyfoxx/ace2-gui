@@ -1,0 +1,8 @@
+language: generic
+sudo: required
+
+services:
+  - docker
+
+script:
+  - docker-compose build && docker-compose run -e TESTING=1 backend pytest -vv
