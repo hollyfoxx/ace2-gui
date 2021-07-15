@@ -14,6 +14,6 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 script:
-  - docker-compose build -f docker-compose-dev.yml
-  - docker-compose -f docker-compose-dev.yml run -e TESTING=1 backend pytest -vv
-  - docker-compose -f docker-compose-dev.yml run frontend npm run test:unit
+  - docker-compose build -f docker-compose-test.yml
+  - docker-compose -f docker-compose-test.yml run -e TESTING=1 backend pytest -vv
+  - docker-compose -f docker-compose-test.yml run frontend npm run test:unit
