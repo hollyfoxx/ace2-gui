@@ -19,6 +19,8 @@ jobs:
       script: 
         - docker-compose -f docker-compose-test.yml build backend
         - docker-compose -f docker-compose-test.yml run -e TESTING=1 backend pytest -vv
+      after_success:
+        - codecov
 
     - stage: "Frontend"
       name: "Frontend Tests"
