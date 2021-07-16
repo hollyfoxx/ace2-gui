@@ -27,8 +27,6 @@ services:
         command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; /start.sh'
 
     frontend:
-        depends_on:
-            - backend
         container_name: ace2-gui-frontend
         build:
             context: .
