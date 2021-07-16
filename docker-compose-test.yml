@@ -25,6 +25,9 @@ services:
         command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; /start.sh'
 
     frontend:
+        # There is no depends_on for the frontend container since it should be able to be tested
+        # fully independent of the backend API. Any API calls it makes should be mocked when testing since
+        # the API calls themselves are already tested within the backend.
         container_name: ace2-gui-frontend
         build:
             context: .
