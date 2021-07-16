@@ -14,10 +14,16 @@ before_install:
 
 jobs:
   include:
-    - script:
-      - docker-compose -f docker-compose-test.yml build backend
-      - docker-compose -f docker-compose-test.yml run -e TESTING=1 backend pytest -vv
+    - stage: "Backend"
+      name: "Backend Tests"
+      script: 
+        - docker-compose -f docker-compose-test.yml build backend
+        - docker-compose -f docker-compose-test.yml run -e TESTING=1 backend pytest -vv
 
-    - script:
-      - docker-compose -f docker-compose-test.yml build frontend
-      - docker-compose -f docker-compose-test.yml run frontend npm run test:unit
+    - stage: "Frontend"
+      name: "Frontend Tests"
+      script:
+        - docker-compose -f docker-compose-test.yml build frontend
+        - docker-compose -f docker-compose-test.yml run frontend npm run lint
+        - docker-compose -f docker-compose-test.yml run frontend npm run test:unit
+        - docker-compose -f docker-compose-test.yml run frontend npm run test:e2e
