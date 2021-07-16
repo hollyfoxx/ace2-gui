@@ -19,6 +19,8 @@ services:
             context: .
             dockerfile: ./backend/Dockerfile
         environment:
+            # The DATABASE_URL environment variable needs to be in the form of:
+            # postgresql://<user>:<password>@db:5432/<database>
             - DATABASE_URL=${DATABASE_URL}
         command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; /start.sh'
 
