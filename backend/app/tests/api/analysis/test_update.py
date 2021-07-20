@@ -58,6 +58,18 @@ def test_update_invalid_uuid(client):
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
+def test_update_invalid_version(client):
+    # Create an analysis
+    create = client.post("/api/analysis/", json={})
+
+    # Make sure you cannot update it using an invalid version
+    update = client.patch(
+        create.headers["Content-Location"],
+        json={"version": str(uuid.uuid4())}
+    )
+    assert update.status_code == status.HTTP_409_CONFLICT
+
+
 def test_update_nonexistent_analysis_module_type(client):
     # Create an analysis
     version = str(uuid.uuid4())

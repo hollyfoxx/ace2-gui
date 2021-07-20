@@ -60,6 +60,30 @@ def test_update_invalid_uuid(client):
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
+def test_update_invalid_version(client):
+    # Create an alert
+    alert_uuid, analysis_uuid = create_alert(client=client)
+
+    # Create an observable type
+    client.post("/api/observable/type/", json={"value": "test_type"})
+
+    # Create an observable instance
+    create_json = {
+        "alert_uuid": alert_uuid,
+        "parent_analysis_uuid": analysis_uuid,
+        "type": "test_type",
+        "value": "test",
+    }
+    create = client.post("/api/observable/instance/", json=create_json)
+
+    # Make sure you cannot update it using an invalid version
+    update = client.patch(
+        create.headers["Content-Location"],
+        json={"version": str(uuid.uuid4())}
+    )
+    assert update.status_code == status.HTTP_409_CONFLICT
+
+
 def test_update_nonexistent_performed_analysis_uuids(client):
     # Create an alert
     alert_uuid, analysis_uuid = create_alert(client=client)

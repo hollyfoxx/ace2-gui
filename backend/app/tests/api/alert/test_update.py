@@ -71,6 +71,22 @@ def test_update_invalid_uuid(client):
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
+def test_update_invalid_version(client):
+    # Create an alert queue and type
+    client.post("/api/alert/queue/", json={"value": "test_queue"})
+    client.post("/api/alert/type/", json={"value": "test_type"})
+
+    # Create an alert
+    create = client.post("/api/alert/", json={"queue": "test_queue", "type": "test_type"})
+
+    # Make sure you cannot update it using an invalid version
+    update = client.patch(
+        create.headers["Content-Location"],
+        json={"version": str(uuid.uuid4())}
+    )
+    assert update.status_code == status.HTTP_409_CONFLICT
+
+
 @pytest.mark.parametrize(
     "key,value",
     [
