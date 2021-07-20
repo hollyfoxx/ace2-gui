@@ -4,11 +4,12 @@ services:
   - docker
 
 env:
-  - DOCKER_COMPOSE_VERSION=1.29.2
-  - POSTGRES_DB=ace
-  - POSTGRES_USER=ace
-  - POSTGRES_PASSWORD=supersecret
-  - DATABASE_URL=postgresql://ace:supersecret@db:5432/ace
+  global:
+    - DOCKER_COMPOSE_VERSION=1.29.2
+    - POSTGRES_DB=ace
+    - POSTGRES_USER=ace
+    - POSTGRES_PASSWORD=supersecret
+    - DATABASE_URL=postgresql://ace:supersecret@db:5432/ace
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
