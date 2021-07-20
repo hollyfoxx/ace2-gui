@@ -8,6 +8,7 @@
         <Dropdown
           v-model="selectedUser"
           :options="users"
+          optionLabel="display_name"
           placeholder="Select a user"
         />
       </div>
@@ -25,6 +26,8 @@
 </template>
 
 <script>
+import user from "../../../services/api/user"
+
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
 
@@ -43,8 +46,13 @@ export default {
   data() {
     return {
       selectedUser: null,
-      users: ["Holly", "Analyst", "none"],
+      users: [],
     };
+  },
+
+  async created() {
+    this.users = await user.getAllUsers();
+    console.log(this.users);
   },
 
   methods: {

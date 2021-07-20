@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import alert from "../../../services/api/alert"
 import Button from "primevue/button";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
@@ -163,7 +163,7 @@ export default {
 
   async created() {
     this.resetAlertTable();
-    await this.fetchAlerts();
+    // this.alerts = await alert.getAlert('1');
   },
 
   methods: {
@@ -204,19 +204,6 @@ export default {
     exportCSV() {
       // Exports currently filtered alerts to CSV
       this.$refs.dt.exportCSV();
-    },
-
-    async fetchAlerts() {
-      // Fetch alerts from the backend API
-      const response = await axios
-        .get(`${process.env.VUE_APP_BACKEND_URL}/alert`)
-        .catch((error) => {
-          console.error(error);
-        });
-
-      if (response && response.status === 200) {
-        this.alerts = response.data;
-      }
     },
   },
 };

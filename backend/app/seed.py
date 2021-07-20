@@ -129,7 +129,7 @@ if not crud.read_all(db_table=User, db=db):
     db.add(User(
         default_alert_queue=crud.read_by_value(value="default", db_table=AlertQueue, db=db),
         display_name="Analyst",
-        email="analyst@localhost",
+        email="analyst@fake.com",
         password="analyst",
         roles=crud.read_by_values(values=["admin"], db_table=UserRole, db=db),
         username="analyst",
