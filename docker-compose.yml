@@ -12,6 +12,8 @@ services:
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
         ports:
             - 6666:5432
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
 
     backend:
         depends_on:
@@ -26,6 +28,8 @@ services:
             - DATABASE_URL=${DATABASE_URL}
         ports:
             - 8888:80
+        volumes:
+            - "./backend/app:/app"
         command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; /start.sh'
 
     frontend:
@@ -40,3 +44,6 @@ services:
             - CHOKIDAR_USEPOLLING=true
         ports:
             - 9999:8080
+
+volumes:
+    postgres_data:
