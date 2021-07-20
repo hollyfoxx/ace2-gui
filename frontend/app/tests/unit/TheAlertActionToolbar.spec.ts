@@ -11,7 +11,6 @@ import Button from "primevue/button";
 
 
 describe("TheAlertActionToolbar.vue", () => {
-    // @ts-ignore
     const wrapper = mount(TheAlertActionToolbar, {
         global: {
             stubs: {
