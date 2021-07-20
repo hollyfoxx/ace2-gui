@@ -5,6 +5,7 @@ venv/
 __pycache__/
 .pytest_cache/
 package-lock.json
+.coverage
 
 tests/e2e/videos/
 tests/e2e/screenshots/
