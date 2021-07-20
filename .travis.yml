@@ -17,15 +17,15 @@ jobs:
     - stage: "Backend"
       name: "Backend Tests"
       script: 
-        - docker-compose -f docker-compose-test.yml build backend
-        - docker-compose -f docker-compose-test.yml run -e TESTING=1 backend pytest -vv
+        - docker-compose build backend
+        - docker-compose run -e TESTING=1 backend pytest -vv
       after_success:
         - codecov
 
     - stage: "Frontend"
       name: "Frontend Tests"
       script:
-        - docker-compose -f docker-compose-test.yml build frontend
-        - docker-compose -f docker-compose-test.yml run frontend npm run lint
-        - docker-compose -f docker-compose-test.yml run frontend npm run test:unit
-        - docker-compose -f docker-compose-test.yml run frontend npm run test:e2e
+        - docker-compose build frontend
+        - docker-compose run frontend npm run lint
+        - docker-compose run frontend npm run test:unit
+        - docker-compose run frontend npm run test:e2e
