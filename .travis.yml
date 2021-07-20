@@ -33,4 +33,5 @@ jobs:
         - docker-compose build frontend
         - docker-compose run frontend npm run lint
         - docker-compose run frontend npm run test:unit
-        - docker-compose run frontend npm run test:e2e
+        # Commenting out the e2e tests for now since we should probably run a separate Cypress Docker container
+        # - docker-compose run frontend npm run test:e2e
