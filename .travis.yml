@@ -21,6 +21,9 @@ jobs:
   include:
     - stage: "Backend"
       name: "Backend Tests"
+      branches:
+        except:
+        - main # The tests are run on the PR branches, not on main
       script: 
         - docker-compose build backend
         - docker-compose run -e TESTING=1 backend pytest -vv
@@ -29,6 +32,9 @@ jobs:
 
     - stage: "Frontend"
       name: "Frontend Tests"
+      branches:
+        except:
+        - main # The tests are run on the PR branches, not on main
       script:
         - docker-compose build frontend
         - docker-compose run frontend npm run lint
@@ -42,16 +48,16 @@ jobs:
       python: 3.8
       branches:
         only:
-        - main
+        - main  # The docs are built only when code is merged into the main branch
       install:
         - pip install mkdocs mkdocs-awesome-pages-plugin mkdocs-material # Install the required dependencies
       script:
-        - mkdocs build --verbose --clean --strict # Build a local version of the docs     
+        - cd documentation && mkdocs build --verbose --clean --strict # Build a local version of the docs     
       deploy: # Deploy documentation to Github in the gh_pages branch
         provider: pages
         skip_cleanup: true
         github_token: $github_token
         keep_history: true
-        local_dir: site
+        local_dir: documentation/site
         on:
             branch: main
