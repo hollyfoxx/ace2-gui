@@ -1,0 +1,30 @@
+# Project information
+site_name: ACE2 - GUI
+site_description: Documentation for Analysis Correlation Engine 2.0 - GUI
+site_author: ACE Ecosystem
+site_url: 
+
+# Repository
+repo_name: ace2-gui
+repo_url: 
+edit_uri: ""
+docs_dir: documentation
+
+theme:
+  name: material
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
+  - fenced_code
+  - tables
+
+# Plugins
+plugins:
+  - search
+  - awesome-pages
+
