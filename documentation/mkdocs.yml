@@ -1,7 +1,7 @@
 # Project information
 site_name: ACE2 - GUI
 site_description: Documentation for Analysis Correlation Engine 2.0 - GUI
-site_author: Matthew Wilson
+site_author: ACE Ecosystem
 site_url: 
 
 # Repository
@@ -12,8 +12,6 @@ edit_uri: ""
 theme:
   name: null
   custom_dir: 'material'
-  feature:
-    tabs: true
 
   # 404 page
   static_templates:
