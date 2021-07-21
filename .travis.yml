@@ -44,7 +44,7 @@ jobs:
         only:
         - main
       install:
-        - pip install mkdocs # Install the required dependencies
+        - pip install mkdocs mkdocs-awesome-pages-plugin mkdocs-material # Install the required dependencies
       script:
         - mkdocs build --verbose --clean --strict # Build a local version of the docs     
       deploy: # Deploy documentation to Github in the gh_pages branch
