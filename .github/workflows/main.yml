@@ -1,5 +1,6 @@
 name: Build and Test
 
+# Runs only when there is a pull request against the main branch
 on:
   pull_request:
     branches: [ main ]
@@ -7,6 +8,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# All of the jobs run in parallel
 jobs:
   backend:
     name: Backend Tests  
