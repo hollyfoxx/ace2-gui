@@ -8,7 +8,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# All of the jobs run in parallel
+# All of the jobs run in parallel, but each step within a job is sequential
 jobs:
   backend:
     name: Backend Tests  
