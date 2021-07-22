@@ -22,6 +22,10 @@ jobs:
     
     env:
       COMPOSE_FILE: ./docker-compose.yml
+      POSTGRES_DB: ace
+      POSTGRES_USER: ace
+      POSTGRES_PASSWORD: supersecret
+      DATABASE_URL: postgresql://ace:supersecret@db:5432/ace
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
