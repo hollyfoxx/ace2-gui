@@ -1,31 +1,59 @@
-import axios from "axios";
-import {AxiosRequestConfig, Method} from "axios";
+import {AxiosRequestConfig} from "axios";
 import instance from "./axios";
+import camelcaseKeys from 'camelcase-keys';
+import snakecaseKeys from 'snakecase-keys';
 
+type Method = 'GET' | 'DELETE' | 'POST' | 'PATCH'
 
 export class BaseApi {
+    SUCCESS_RESPONSE_CODES = [200, 201, 202, 203, 204, 205, 206]
 
-     protected async baseRequest(url: string, method: Method, data?: BaseModel) {
+    formatIncomingData(data: Record<string, any>) {
+        return camelcaseKeys(data, {deep: true})
+    }
+
+    formatOutgoingData(data: Record<string, any>) {
+        return snakecaseKeys(data);
+    }
+
+    methodDict = {
+        'POST': 'create',
+        'GET': 'fetch',
+        'PATCH': 'update',
+        'DELETE': 'delete',
+    }
+
+
+     protected async baseRequest(url: string, method: Method, data?: Record<string, any>) {
          const config: AxiosRequestConfig = {
              'url': url,
              'method': method,
          };
 
          if (data) {
-             config['data'] = data;
+             config['data'] = this.formatOutgoingData(data);
          }
 
-         console.log(instance.defaults.headers);
-
-        return await instance
+         const response = await instance
             .request(config)
             .catch((error) => {
-                console.error(error);
+                throw error;
             });
+
+         if (response) {
+             if (this.SUCCESS_RESPONSE_CODES.includes(response.status)) {
+                 if (Array.isArray(response.data)) {
+                     return response.data.map(this.formatIncomingData);
+                 }
+                 return this.formatIncomingData(response.data);
+             }
+             throw new Error(`${this.methodDict[method]} failed: ${response.status}: ${response.statusText}`);
+         }
+         throw new Error(`${this.methodDict[method]} failed!`);
 
     }
 
-     async createRequest(url: string, data?: BaseCreate) {
+     async createRequest(url: string, data?: Record<string, any>) {
         return await this.baseRequest(url, 'POST', data);
     }
 
@@ -33,41 +61,8 @@ export class BaseApi {
         return await this.baseRequest(url, 'GET');
     }
 
-    async updateRequest(url: string, data?: BaseUpdate) {
+    async updateRequest(url: string, data?: Record<string, any>) {
         return await this.baseRequest(url, 'PATCH', data);
     }
 
-}
-
-export type UUID = string
-
-export interface BaseModel {
-    directives: Array<string>
-    tags: Array<string>
-    threat_actor?: string
-    threats: Array<string>
-    version: UUID
-
-}
-
-export interface BaseCreate extends BaseModel {
-    uuid: UUID
-}
-
-export interface BaseRead extends BaseModel {
-    // todo: create interfaces for each of these (comment, directive, tag, etc.)
-    // update Array<string> to be like Array<CommentRead> for each
-    comments: Array<string>
-    directives: Array<string>
-    tags: Array<string>
-    threatActor?: string
-    threats: Array<string>
-    uuid: UUID
-}
-
-export interface BaseUpdate extends BaseModel {
-    directives: Array<string>
-    tags: Array<string>
-    threats: Array<string>
-    version: UUID
 }
