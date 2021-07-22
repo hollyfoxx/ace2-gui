@@ -8,9 +8,13 @@ on:
 
 jobs:
   deploy:
+    name: Publish Documentation
     runs-on: ubuntu-latest
+    
+    # This makes sure that only a single job of this workflow runs at a time
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
+      
     steps:
       - uses: actions/checkout@v2
 
@@ -27,7 +31,6 @@ jobs:
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site
