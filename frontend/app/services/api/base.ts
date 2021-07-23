@@ -5,7 +5,7 @@ import snakecaseKeys from 'snakecase-keys';
 
 type Method = 'GET' | 'DELETE' | 'POST' | 'PATCH'
 
-class BaseApi {
+export default class BaseApi {
     SUCCESS_RESPONSE_CODES = [200, 201, 202, 203, 204, 205, 206]
 
     formatIncomingData(data: Record<string, any>) {
@@ -66,6 +66,3 @@ class BaseApi {
     }
 
 }
-
-const api = new BaseApi();
-export default api;

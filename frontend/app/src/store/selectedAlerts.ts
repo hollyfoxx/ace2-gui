@@ -1,7 +1,5 @@
 // Store to track which alerts are currently selected
 // Can be used in 'alert actions' modals (or elsewhere) to determine what alerts to apply actions on
-
-import { Commit } from "vuex";
 import {CommitFunction} from "@/store/index";
 
 // EsLint says to use 'Record<string, unknown>[]' instead of 'object' type (makes for easier debugging apparently)
@@ -18,6 +16,10 @@ const store = {
   getters: {
     selected: (state: { selected: Record<string, unknown>[] }) =>
       state.selected,
+    anySelected: (state: { selected: Record<string, unknown>[] }) =>
+        state.selected.length > 0,
+    multipleSelected: (state: {selected: Record<string, unknown>[] }) =>
+        state.selected.length > 1
   },
   mutations: {
     SELECT: (

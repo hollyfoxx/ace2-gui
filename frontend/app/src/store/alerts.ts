@@ -1,5 +1,5 @@
 import alert from "../../services/api/alerts"
-import {AlertCreate, AlertRead, AlertUpdate} from "../../models/alert"
+import {AlertCreate, AlertRead} from "../../models/alert"
 import {CommitFunction} from "@/store/index";
 import {UUID} from "../../models/base";
 
@@ -51,17 +51,17 @@ const store =  {
                 })
                 .catch(error => {throw error});
         },
-        updateAlert({commit} : CommitFunction, oldAlert: AlertRead, updateData: Record<string, unknown>) {
-            const updatedAlert = Object.assign(oldAlert, updateData);
-            return alert.updateAlert(updatedAlert, oldAlert.uuid)
+        updateAlert({commit} : CommitFunction, payload: {oldAlert: AlertRead, updateData: Record<string, unknown>}) {
+            const updatedAlert = Object.assign(payload.oldAlert, payload.updateData);
+            return alert.updateAlert(updatedAlert, payload.oldAlert.uuid)
                 .catch(error => {throw error});
         },
-        updateAlerts({commit} : CommitFunction, oldAlerts: AlertRead[], updateData: Record<string, unknown>) {
+        updateAlerts({commit} : CommitFunction, payload: {oldAlerts: AlertRead[], updateData: Record<string, unknown>}) {
             // I have no idea if this is the right way to do this
             // but basically pushing all the requests to update into an array
             const promises = [];
-            for (let i = 0; i < oldAlerts.length; i++) {
-                const updatedAlert = Object.assign(oldAlerts[i], updateData);
+            for (let i = 0; i < payload.oldAlerts.length; i++) {
+                const updatedAlert = Object.assign(payload.oldAlerts[i], payload.updateData);
                 promises.push(alert.updateAlert(updatedAlert, updatedAlert.uuid));
             }
 

@@ -31,13 +31,13 @@
         @click="close"
         class="p-button-text"
       />
-      <Button label="Assign" icon="pi pi-check" @click="close" />
+      <Button label="Assign" icon="pi pi-check" @click="assignUserClicked()" :disabled="!anyAlertsSelected" />
     </template>
   </BaseModal>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
@@ -57,14 +57,21 @@ export default {
     isOpen() {
       return this.$store.getters["modals/allOpen"].includes(this.name);
     },
-    ...mapState({users: state => state.users.users}),
+    ...mapActions({
+      updateAlert: "alerts/updateAlert",
+      updateAlerts: "alerts/updateAlerts"
+    }),
+    ...mapState({users: state => state.users.users,
+                selectedAlerts: state => state.selectedAlerts.selected}),
+    ...mapGetters({anyAlertsSelected: 'selectedAlerts/anySelected',
+                  multipleAlertsSelected: 'selectedAlerts/multipleSelected'})
   },
 
   data() {
     return {
       error: null,
       isLoading: false,
-      selectedUser: null
+      selectedUser: null,
     };
   },
 
@@ -89,6 +96,29 @@ export default {
         this.error = error.message || 'Something went wrong!';
       }
       this.isLoading = false;
+    },
+    assignUserClicked() {
+      this.isLoading = true;
+      if (this.multipleAlertsSelected) {
+        this.assignUserToMultiple();
+      }
+      this.assignUser();
+      this.isLoading = false;
+      this.close();
+    },
+    async assignUser() {
+      try {
+        await this.updateAlert({oldAlert: this.selectedAlerts[0], update: {owner: this.selectedUser}});
+      } catch (error) {
+        this.error = error.message || 'Something went wrong!';
+      }
+    },
+    async assignUserToMultiple() {
+      try {
+        await this.updateAlerts({oldAlerts: this.selectedAlerts, update: {owner: this.selectedUser}});
+      } catch (error) {
+        this.error = error.message || 'Something went wrong!';
+      }
     },
     handleError() {
       this.error = null;

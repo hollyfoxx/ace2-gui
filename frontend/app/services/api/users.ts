@@ -1,7 +1,8 @@
-import api from './base'
+import BaseApi from './base'
 import {UUID} from "../../models/base";
 import {UserCreate, UserUpdate} from "../../models/user";
 
+const api = new BaseApi();
 
 export default
 {

@@ -1,6 +1,8 @@
-import api from './base'
+import BaseApi from './base'
 import {UUID} from '../../models/base'
 import {AlertCreate, AlertUpdate} from '../../models/alert'
+
+const api = new BaseApi();
 
 export default
 {
