@@ -6,13 +6,15 @@ const store =  {
     namespaced: true,
 
     state: {
+        // last time all users were fetched
         lastGetAll: null,
+        // all users
         users: []
     },
 
     mutations: {
         SET_USERS (state: { users: UserRead[] }, users: UserRead[]) {
-            state.users = users
+            state.users = users;
         },
         SET_GET_ALL_TIMESTAMP(state: { lastGetAll: number }) {
             state.lastGetAll = new Date().getTime();
