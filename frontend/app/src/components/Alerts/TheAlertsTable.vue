@@ -122,7 +122,6 @@
 </template>
 
 <script>
-import alert from "../../../services/api/alert"
 import Button from "primevue/button";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
