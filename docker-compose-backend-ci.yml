@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+    db:
+        container_name: ace2-gui-db
+        image: aceecosystem/ace2-gui-db:latest
+        environment:
+            - POSTGRES_DB=${POSTGRES_DB}
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+    backend:
+        depends_on:
+            - db
+        container_name: ace2-gui-backend
+        image: aceecosystem/ace2-gui-backend:latest
+        environment:
+            # The DATABASE_URL environment variable needs to be in the form of:
+            # postgresql://<user>:<password>@db:5432/<database>
+            - DATABASE_URL=${DATABASE_URL}
+        command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; /start.sh'
