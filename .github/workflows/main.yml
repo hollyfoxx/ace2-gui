@@ -60,7 +60,8 @@ jobs:
         with:
           push: false
           load: true
-          tags: ${{ steps.prep.outputs.tagged_image_db }}
+#           tags: ${{ steps.prep.outputs.tagged_image_db }}
+          tags: aceecosystem/ace2-gui-db:latest
           builder: ${{ steps.buildx.outputs.name }}
           file: ./db/Dockerfile
           context: .
@@ -72,7 +73,8 @@ jobs:
         with:
           push: false
           load: true
-          tags: ${{ steps.prep.outputs.tagged_image_backend }}
+#           tags: ${{ steps.prep.outputs.tagged_image_backend }}
+          tags: aceecosystem/ace2-gui-backend:latest
           builder: ${{ steps.buildx.outputs.name }}
           file: ./backend/Dockerfile
           context: .
