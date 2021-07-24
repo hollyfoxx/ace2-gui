@@ -78,7 +78,7 @@ jobs:
 #         run: docker-compose run -e TESTING=1 backend pytest -vv
 
       - name: Up
-        run: docker-compose up --no-build
+        run: docker image list
         
       - name: Move cache
         # Temp fix
