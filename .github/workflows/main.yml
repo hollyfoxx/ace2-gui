@@ -34,9 +34,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-single-buildx
+            ${{ runner.os }}-buildx-
             
       - name: Build database
         uses: docker/build-push-action@v2
@@ -44,11 +44,11 @@ jobs:
           push: false
           load: true
           tags: aceecosystem/ace2-gui-db:latest
-          builder: ${{ steps.buildx.outputs.name }}
+#           builder: ${{ steps.buildx.outputs.name }}
           file: ./db/Dockerfile
-          context: .
+#           context: .
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
             
       - name: Build backend
         uses: docker/build-push-action@v2
@@ -56,11 +56,11 @@ jobs:
           push: false
           load: true
           tags: aceecosystem/ace2-gui-backend:latest
-          builder: ${{ steps.buildx.outputs.name }}
+#           builder: ${{ steps.buildx.outputs.name }}
           file: ./backend/Dockerfile
-          context: .
+#           context: .
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
         
 #       - name: Build
 #         run: docker-compose build backend
