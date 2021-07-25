@@ -30,6 +30,7 @@ jobs:
         id: prep
         run: |
           TAG=$(echo $GITHUB_SHA | head -c7)
+          TAG="latest"
           IMAGE="aceecosystem/ace2-gui"
           echo ::set-output name=tagged_image_backend::${IMAGE}-backend:${TAG}
           echo ::set-output name=tagged_image_db::${IMAGE}-db:${TAG}
@@ -43,25 +44,24 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache-db
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-db-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-db-
             
       - name: Cache Docker layers - backend
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache-backend
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-backend-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-backend-
             
       - name: Build database
         uses: docker/build-push-action@v2
         with:
           push: false
           load: true
-#           tags: ${{ steps.prep.outputs.tagged_image_db }}
-          tags: aceecosystem/ace2-gui-db:latest
+          tags: ${{ steps.prep.outputs.tagged_image_db }}
           builder: ${{ steps.buildx.outputs.name }}
           file: ./db/Dockerfile
           context: .
@@ -73,8 +73,7 @@ jobs:
         with:
           push: false
           load: true
-#           tags: ${{ steps.prep.outputs.tagged_image_backend }}
-          tags: aceecosystem/ace2-gui-backend:latest
+          tags: ${{ steps.prep.outputs.tagged_image_backend }}
           builder: ${{ steps.buildx.outputs.name }}
           file: ./backend/Dockerfile
           context: .
@@ -84,13 +83,13 @@ jobs:
 #       - name: Build
 #         run: docker-compose build backend
           
-#       - name: Test
-#         run: docker-compose run -e TESTING=1 backend pytest -vv
+      - name: Test
+        run: docker-compose -f docker-compose-backend-ci.yml run -e TESTING=1 backend pytest -vv
 
-      - name: Up
-        run: |
-          docker image list
-          docker-compose -f docker-compose-backend-ci.yml up -d --no-build
+#       - name: Up
+#         run: |
+#           docker image list
+#           docker-compose -f docker-compose-backend-ci.yml up -d --no-build
         
       - name: Move cache
         # Temp fix
