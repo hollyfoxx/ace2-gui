@@ -15,37 +15,151 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
       POSTGRES_DB: ace
       POSTGRES_USER: ace
       POSTGRES_PASSWORD: supersecret
       DATABASE_URL: postgresql://ace:supersecret@db:5432/ace
 
     steps:
+      # Check out the git repository
       - name: Checkout code
         uses: actions/checkout@v2
         
-      - name: Build
-        run: docker-compose build backend
+      # Set some initial variables for use in subsequent steps
+      - name: Prepare
+        id: prep
+        run: |
+          TAG="latest"
+          IMAGE="aceecosystem/ace2-gui"
+          echo ::set-output name=tagged_image_backend::${IMAGE}-backend:${TAG}
+          echo ::set-output name=tagged_image_db::${IMAGE}-db:${TAG}
+          echo ::set-output name=tag::${TAG}
+        
+      # Initialize Docker Buildx
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
+        
+      # Load the db container from cache
+      - name: Cache Docker layers - db
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache-db
+          key: ${{ runner.os }}-buildx-db-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-db-
+      
+      # Build the db container and use its cache
+      - name: Build database
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          load: true
+          tags: ${{ steps.prep.outputs.tagged_image_db }}
+          builder: ${{ steps.buildx.outputs.name }}
+          file: ./db/Dockerfile
+          context: .
+          cache-from: type=local,src=/tmp/.buildx-cache-db
+          cache-to: type=local,dest=/tmp/.buildx-cache-db-new
+            
+      # Load the backend container from cache
+      - name: Cache Docker layers - backend
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache-backend
+          key: ${{ runner.os }}-buildx-backend-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-backend-
+            
+      # Build the backend container and use its cache
+      - name: Build backend
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          load: true
+          tags: ${{ steps.prep.outputs.tagged_image_backend }}
+          builder: ${{ steps.buildx.outputs.name }}
+          file: ./backend/Dockerfile
+          context: .
+          cache-from: type=local,src=/tmp/.buildx-cache-backend
+          cache-to: type=local,dest=/tmp/.buildx-cache-backend-new
           
+      # Run the unit tests and code coverage
       - name: Test
-        run: docker-compose run -e TESTING=1 backend pytest -vv
+        run: docker-compose -f docker-compose-backend-ci.yml run -e TESTING=1 backend pytest -vv
+        
+      # This is a temprorary fix to prevent the Docker cache from eating up all available space over time
+      - name: Move cache
+        # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+        run: |
+          rm -rf /tmp/.buildx-cache-db
+          mv /tmp/.buildx-cache-db-new /tmp/.buildx-cache-db
+          rm -rf /tmp/.buildx-cache-backend
+          mv /tmp/.buildx-cache-backend-new /tmp/.buildx-cache-backend
 
   frontend:
-    name: Frontend Tests
+    name: Frontend Tests  
     runs-on: ubuntu-latest
-    
+
     steps:
+      # Check out the git repository
       - name: Checkout code
         uses: actions/checkout@v2
         
-      - name: Build
-        run: docker-compose build frontend
+      # Set some initial variables for use in subsequent steps
+      - name: Prepare
+        id: prep
+        run: |
+          TAG="latest"
+          IMAGE="aceecosystem/ace2-gui"
+          echo ::set-output name=tagged_image_frontend::${IMAGE}-frontend:${TAG}
+          echo ::set-output name=tag::${TAG}
+        
+      # Initialize Docker Buildx
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
+        
+      # Load the frontend container from cache
+      - name: Cache Docker layers - frontend
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache-frontend
+          key: ${{ runner.os }}-buildx-frontend-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-frontend-
+      
+      # Build the frontend container and use its cache
+      - name: Build frontend
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          load: true
+          tags: ${{ steps.prep.outputs.tagged_image_frontend }}
+          builder: ${{ steps.buildx.outputs.name }}
+          file: ./frontend/Dockerfile.dev
+          context: .
+          cache-from: type=local,src=/tmp/.buildx-cache-frontend
+          cache-to: type=local,dest=/tmp/.buildx-cache-frontend-new
           
       - name: Lint
-        run: docker-compose run frontend npm run lint
+        run: docker-compose -f docker-compose-backend-ci.yml run frontend npm run lint
         
       - name: Unit tests
-        run: docker-compose run frontend npm run test:unit
+        run: docker-compose -f docker-compose-backend-ci.yml run frontend npm run test:unit
         
-#       - name: End to end tests
-#         run: docker-compose run frontend npm run test:e2e
+  #       - name: End to end tests
+  #         run: docker-compose run frontend npm run test:e2e
+
+      # This is a temprorary fix to prevent the Docker cache from eating up all available space over time
+      - name: Move cache
+        # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+        run: |
+          rm -rf /tmp/.buildx-cache-frontend
+          mv /tmp/.buildx-cache-frontend-new /tmp/.buildx-cache-frontend
