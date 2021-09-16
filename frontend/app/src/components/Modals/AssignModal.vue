@@ -108,14 +108,14 @@ export default {
     },
     async assignUser() {
       try {
-        await this.updateAlert({oldAlert: this.selectedAlerts[0], update: {owner: this.selectedUser}});
+        await this.updateAlert({oldAlertUUID: this.selectedAlerts[0], update: {owner: this.selectedUser}});
       } catch (error) {
         this.error = error.message || 'Something went wrong!';
       }
     },
     async assignUserToMultiple() {
       try {
-        await this.updateAlerts({oldAlerts: this.selectedAlerts, update: {owner: this.selectedUser}});
+        await this.updateAlerts({oldAlertUUIDs: this.selectedAlerts, update: {owner: this.selectedUser}});
       } catch (error) {
         this.error = error.message || 'Something went wrong!';
       }

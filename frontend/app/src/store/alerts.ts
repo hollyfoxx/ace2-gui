@@ -51,18 +51,16 @@ const store =  {
                 })
                 .catch(error => {throw error});
         },
-        updateAlert({commit} : CommitFunction, payload: {oldAlert: AlertRead, updateData: Record<string, unknown>}) {
-            const updatedAlert = Object.assign(payload.oldAlert, payload.updateData);
-            return alert.updateAlert(updatedAlert, payload.oldAlert.uuid)
+        updateAlert({commit} : CommitFunction, payload: {oldAlertUUID: UUID, updateData: Record<string, unknown>}) {
+            return alert.updateAlert(payload.updateData, payload.oldAlertUUID)
                 .catch(error => {throw error});
         },
-        updateAlerts({commit} : CommitFunction, payload: {oldAlerts: AlertRead[], updateData: Record<string, unknown>}) {
+        updateAlerts({commit} : CommitFunction, payload: {oldAlertUUIDs: UUID[], updateData: Record<string, unknown>}) {
             // I have no idea if this is the right way to do this
             // but basically pushing all the requests to update into an array
             const promises = [];
-            for (let i = 0; i < payload.oldAlerts.length; i++) {
-                const updatedAlert = Object.assign(payload.oldAlerts[i], payload.updateData);
-                promises.push(alert.updateAlert(updatedAlert, updatedAlert.uuid));
+            for (let i = 0; i < payload.oldAlertUUIDs.length; i++) {
+                promises.push(alert.updateAlert(payload.updateData, payload.oldAlertUUIDs[i]));
             }
 
             // and then all of those requests are resolved here
