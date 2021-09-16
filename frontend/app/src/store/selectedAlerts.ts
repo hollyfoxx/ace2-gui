@@ -1,12 +1,7 @@
 // Store to track which alerts are currently selected
 // Can be used in 'alert actions' modals (or elsewhere) to determine what alerts to apply actions on
 import {CommitFunction} from "@/store/index";
-
-// EsLint says to use 'Record<string, unknown>[]' instead of 'object' type (makes for easier debugging apparently)
-// Todo: convert 'Record<string, unknown>[]' type to alert interface when that's nailed down more?
-// export interface Alert {
-//     id: string;
-// }
+import {UUID} from "../../models/base";
 
 const store = {
   namespaced: true,
@@ -14,37 +9,37 @@ const store = {
     selected: [],
   },
   getters: {
-    selected: (state: { selected: Record<string, unknown>[] }) =>
+    selected: (state: { selected: UUID[] }) =>
       state.selected,
-    anySelected: (state: { selected: Record<string, unknown>[] }) =>
+    anySelected: (state: { selected: UUID[] }) =>
         state.selected.length > 0,
-    multipleSelected: (state: {selected: Record<string, unknown>[] }) =>
+    multipleSelected: (state: {selected: UUID[] }) =>
         state.selected.length > 1
   },
   mutations: {
     SELECT: (
-      state: { selected: Record<string, unknown>[] },
-      payload: Record<string, unknown>
+      state: { selected: UUID[] },
+      payload: UUID
     ) => state.selected.push(payload),
     UNSELECT: (
-      state: { selected: Record<string, unknown>[] },
-      payload: Record<string, unknown>
+      state: { selected: UUID[] },
+      payload: UUID
     ) => (state.selected = state.selected.filter((e) => e !== payload)),
     SELECTALL: (
-      state: { selected: Record<string, unknown>[] },
-      payload: Record<string, unknown>[]
+      state: { selected: UUID[] },
+      payload: UUID[]
     ) => (state.selected = payload),
-    UNSELECTALL: (state: { selected: Record<string, unknown>[] }) =>
+    UNSELECTALL: (state: { selected: UUID[] }) =>
       (state.selected = []),
   },
   actions: {
-    select: ({ commit }: CommitFunction, payload: Record<string, unknown>) =>
+    select: ({ commit }: CommitFunction, payload: UUID) =>
       commit("SELECT", payload),
-    unselect: ({ commit }: CommitFunction, payload: Record<string, unknown>) =>
+    unselect: ({ commit }: CommitFunction, payload: UUID) =>
       commit("UNSELECT", payload),
     selectAll: (
       { commit }: CommitFunction,
-      payload: Record<string, unknown>[]
+      payload: UUID[]
     ) => commit("SELECTALL", payload),
     unselectAll: ({ commit }: CommitFunction) => commit("UNSELECTALL"),
   },

@@ -162,20 +162,25 @@ export default {
 
   async created() {
     this.resetAlertTable();
-    // this.alerts = await alert.getAlert('1');
+    // this is where we can query for alerts to show
+    // this.alerts = await alert.getAlerts();
   },
 
   methods: {
     alertSelect(alert) {
-      this.$store.dispatch("selectedAlerts/select", alert);
+      this.$store.dispatch("selectedAlerts/select", alert.uuid);
     },
 
     alertUnselect(alert) {
-      this.$store.dispatch("selectedAlerts/unselect", alert);
+      this.$store.dispatch("selectedAlerts/unselect", alert.uuid);
     },
 
     alertSelectAll() {
-      this.$store.dispatch("selectedAlerts/selectAll", this.alerts);
+      let all_alert_uuids = [];
+      for (let i = 0; i < this.alerts.length; i++) {
+        all_alert_uuids.push(this.alerts[i].uuid)
+      }
+      this.$store.dispatch("selectedAlerts/selectAll", all_alert_uuids);
     },
 
     alertUnselectAll() {
