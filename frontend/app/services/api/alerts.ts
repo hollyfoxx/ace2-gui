@@ -28,7 +28,7 @@ export default
     // UPDATE
     async updateAlert(update_data: Record<string, unknown>, uuid: UUID)
     {
-        return await api.updateRequest(`${this.endpoint}${uuid}`, alert).catch(err => {throw err});
+        return await api.updateRequest(`${this.endpoint}${uuid}`, update_data).catch(err => {throw err});
     }
 
 }
