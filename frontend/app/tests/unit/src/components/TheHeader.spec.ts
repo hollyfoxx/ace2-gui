@@ -1,7 +1,7 @@
 import TheHeader from "@/components/UserInterface/TheHeader.vue";
 import {mount, VueWrapper} from "@vue/test-utils";
 import Button from "primevue/button";
-import router from "@/router/index"
+import router from "@/router"
 
 
 describe("TheHeader.vue", () => {
