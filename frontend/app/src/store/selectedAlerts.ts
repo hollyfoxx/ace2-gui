@@ -6,7 +6,7 @@ import {UUID} from "../../models/base";
 const store = {
   namespaced: true,
   state: {
-    selected: [],
+    selected: Array<UUID>(),
   },
   getters: {
     selected: (state: { selected: UUID[] }) =>
