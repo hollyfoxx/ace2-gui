@@ -10,20 +10,20 @@ const store =  {
         // currently opened alert
         openAlert: null,
         // last time alerts were fetched with current filter settings
-        lastQueriedAlerts: null,
+        lastQueriedAlertsTime: null,
         // all alerts returned from current filter settings
         queriedAlerts: []
     },
 
     mutations: {
-        SET_OPEN_ALERT(state: {openAlert: AlertRead}, alert: AlertRead){
+        SET_OPEN_ALERT(state: {openAlert: AlertRead|null}, alert: AlertRead){
             state.openAlert = alert;
         },
-        SET_QUERIED_ALERTS(state: { queried_alerts: AlertRead[] }, alerts: AlertRead[]) {
-            state.queried_alerts = alerts;
+        SET_QUERIED_ALERTS(state: { queriedAlerts: AlertRead[] }, alerts: AlertRead[]) {
+            state.queriedAlerts = alerts;
         },
-        SET_QUERY_TIMESTAMP(state: { lastQueriedAlerts: number }) {
-            state.lastQueriedAlerts = new Date().getTime();
+        SET_QUERY_TIMESTAMP(state: { lastQueriedAlertsTime: number|null }) {
+            state.lastQueriedAlertsTime = new Date().getTime();
         }
     },
 
