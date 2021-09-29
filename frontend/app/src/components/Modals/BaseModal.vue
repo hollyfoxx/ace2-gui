@@ -5,6 +5,7 @@
 
 <template>
   <Dialog
+      append-to="self"
     v-model:visible="isOpen"
     :header="header"
     :modal="true"

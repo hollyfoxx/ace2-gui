@@ -9,17 +9,17 @@ const store =  {
         // last time all users were fetched
         lastGetAll: null,
         // all users
-        users: Array()
+        users: []
     },
     getters: {
         users: (state: { users: UserRead[] }) =>
             state.users,
     },
     mutations: {
-        SET_USERS (state: { users: UserRead[], lastGetAll: number }, users: UserRead[]) {
+        SET_USERS (state: { users: UserRead[], lastGetAll: number|null }, users: UserRead[]) {
             state.users = users;
         },
-        SET_GET_ALL_TIMESTAMP(state: {  users: UserRead[], lastGetAll: number }) {
+        SET_GET_ALL_TIMESTAMP(state: {  users: UserRead[], lastGetAll: number|null }) {
             state.lastGetAll = new Date().getTime();
         }
     },
